@@ -22,24 +22,29 @@ app.get('/info', (req, res) => {
 
 app.get('/api/persons', (req, res) => {
 	Entry.find({}).then(persons => {
-		res.json(persons)
+	  res.json(persons)
 	})
 })
 
 app.get('/api/persons/:id', (req, res) => {
 	Entry.findById(req.params.id).then(person => {
-		if (person) {
-			res.json(person)
-		} else {
-			return res.status(404).end()
-		}
+	  if (person) {
+		res.json(person)
+	  } else {
+		return res.status(404).end()
+	  }
 	})
 })
 
 app.delete('/api/persons/:id', (req, res) => {
-	const id = Number(req.params.id)
-	persons = persons.filter(person => person.id !== id)
-	res.status(204).end()
+	Entry.findByIdAndRemove(req.params.id)
+	  .then(result => {
+		res.status(204).end()
+	  })
+	  .catch(error => {
+		console.log(error)
+		res.status(400).send({error: 'invalid id'})
+	  })
 })
 
 app.post('/api/persons', (req, res) => {
@@ -47,25 +52,25 @@ app.post('/api/persons', (req, res) => {
 	console.log(body)
 
 	if (!body.name) {
-		return res.status(400).json(
-			{ error: 'name missing' }
-		)
+	  return res.status(400).json(
+		{ error: 'name missing' }
+	  )
 	}
 
 	if (!body.number) {
-		return res.status(400).json(
-			{ error: 'number missing' }
-		)
+	  return res.status(400).json(
+		{ error: 'number missing' }
+	  )
 	}
 
 	const person = new Entry({
-		id: generateId(),
-		name: body.name,
-		number: body.number
+	  id: generateId(),
+	  name: body.name,
+	  number: body.number
 	})
 
 	person.save().then(savedPerson => {
-		res.json(savedPerson)
+	  res.json(savedPerson)
 	})
 })
 
