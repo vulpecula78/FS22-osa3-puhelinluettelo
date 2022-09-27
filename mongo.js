@@ -17,9 +17,9 @@ const url =
 mongoose.connect(url)
 
 const entrySchema = new mongoose.Schema({
-    name: String,
-    number: String
-  })
+  name: String,
+  number: String
+})
 
 const Entry = mongoose.model('Entry', entrySchema)
 
